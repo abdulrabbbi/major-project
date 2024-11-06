@@ -1,0 +1,43 @@
+<% layout("layouts/boilerplate") %>
+
+<body>
+  <div class="row">
+    <div class="col-8">
+      <div class="card col-8 offset-2">
+        <br>
+        <h1>Listing Detail</h1>
+        <br>
+        <img
+          class="card-img-top img-fluid"
+          src="<%= list.image %>"
+          alt="Card image cap"
+          style="width: 100%; height: 250px; object-fit: cover;"
+        />
+        <div class="card-body">
+          <p class="card-text">
+            <ul>
+              <li><%= list.title %></li>
+              <li><%= list.description %></li>
+              <li>Rs: <%= list.price.toLocaleString('en-PK') %></li>
+              <li><%= list.location %></li>
+              <li><%= list.country %></li>
+            </ul>
+          </p>
+          
+          <div class="btn-container">
+            <form action="/listing/<%= list.id%>/edit" method="get">
+              <button type="submit" class="btn btn-dark add-btn">Edit</button>
+            </form>
+
+            <form action="/listing/<%= list._id %>/delete?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-dark delete-btn">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+</body>
+</html>

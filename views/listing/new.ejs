@@ -1,0 +1,123 @@
+<% layout("layouts/boilerplate") %>
+  <body>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <br>
+    <h1>create new listing</h1>
+    <form action="/listing" method="post" novalidate class="needs-validation">
+      <!-- title field -->
+      <div class="mb-3">
+        <label for="title" class="form-label">title:</label>
+        <input
+          type="text"
+          placeholder="Add a catchy title"
+          name="listing[title]"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+        <div class="invalid-feedback">
+          Please provide a title.
+        </div>
+      </div>
+      <!-- descripation field -->
+      <div class="mb-3">
+        <label for="description" class="form-label">description:</label>
+
+        <textarea
+          name="listing[description]"
+          placeholder="Tell us what makes this special..."
+          class="form-control"
+          required
+        ></textarea>
+        <div class="valid-feedback">
+          Great description!
+        </div>
+        <div class="invalid-feedback">
+          Please enter a description.
+        </div>
+      </div>
+      <!-- image field -->
+      <div class="mb-3">
+        <label for="image" class="form-label">image url:</label>
+        <input
+          type="text"
+          name="listing[image]"
+          placeholder="Paste the image link here!"
+          class="form-control"
+          
+        />
+        <div class="valid-feedback">
+          Image URL is valid.
+        </div>
+        <div class="invalid-feedback">
+          Please provide a valid image URL.
+        </div>
+      </div>
+      <!-- price field -->
+      <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="price" class="form-label">price:</label>
+            <input
+              type="text"
+              name="listing[price]"
+              placeholder="Set the perfect price.."
+              class="form-control"
+              required
+            />
+            <div class="valid-feedback">
+              Perfect price.
+            </div>
+            <div class="invalid-feedback">
+              Please provide a price.
+            </div>
+          </div>
+          <!-- lcoation field -->
+          <div class="mb-3 col-md-6">
+            <label for="location" class="form-label">location:</label>
+            <input
+              type="text"
+              name="listing[location]"
+              placeholder="Where can we find this?"
+              class="form-control"
+              required
+            />
+            <div class="valid-feedback">
+              Location looks good.
+            </div>
+            <div class="invalid-feedback">
+              Please specify the location.
+            </div>
+          </div>
+          
+      </div>
+      <!-- country field -->
+      <div class="mb-3">
+        <label for="country" class="form-label">country:</label>
+        <input
+          type="text"
+          name="listing[country]"
+          placeholder="Country of origin ..."
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">
+          Country selected.
+        </div>
+        <div class="invalid-feedback">
+          Please select a country.
+        </div>
+    
+      </div>
+        <br>
+          <!-- Submit Button -->
+
+      <button class="btn btn-dark add-btn">Create</button>
+      <br><br>
+    </form>
+</div>
+</div>
+  </body>
+</html>
