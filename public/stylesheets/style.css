@@ -91,13 +91,28 @@ body {
 }
 
 /* new page */
-
+.btn-styled {
+  font-size: 1rem  !important;          
+  font-weight: bold  !important;        
+  padding: 0.8rem 1.5rem  !important;   
+  border: none  !important;
+  border-radius: 5px  !important;       
+  cursor: pointer  !important;
+  color: white  !important;            
+}
+/* Specific button colors */
 .add-btn {
-  background-color: #fe424d !important;
-  border: none !important;
-  font-size: larger !important;
-  font-weight: bolder !important;
-  padding: 0.8rem 1.9rem !important;
+  background-color: #fe424d  !important;  /* Unique color for add button */
+}
+.add-btn:hover{
+  opacity: .8  !important;
+}
+
+.delete-btn {
+  background-color: #100f0f  !important;  /* Unique color for delete button */
+}
+.delete-btn:hover{
+  opacity: .8  !important;
 }
 
 /* show page */
@@ -107,10 +122,11 @@ body {
   gap: 3rem;
 }
 
-.delete-btn {
-  background-color: #100f0f !important;
-  border: none !important;
-  font-size: larger !important;
-  font-weight: bolder !important;
-  padding: 0.8rem 1.9rem !important;
+
+
+.review-submit-btn {
+  background-color: #100f0f  !important;  /* Matches delete button color */
+}
+.review-submit-btn:hover{
+  opacity: .8  !important;
 }

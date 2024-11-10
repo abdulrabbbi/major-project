@@ -9,6 +9,7 @@ const wrapAsync = require("./utils/wrapasync"); //  try and catch to async error
 const expressError = require("./utils/expresserror"); //  to handle the express error
 const wrapasync = require("./utils/wrapasync"); // to handle the async function
 const { listingSchema } = require("./schema");
+const Review = require("./models/review");
 const mongoUrl = "mongodb://127.0.0.1:27017/Wandurlust";
 async function main() {
   await mongoose.connect(mongoUrl);
@@ -29,6 +30,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(methodOverride("_method"));
 
+//validte listing from backend side
+const validateListing = (req, res, next) => {
+  const { error } = listingSchema.validate(req.body);
+  if (error) {
+    const errMsg = error.details.map((el) => el.message).join(", ");
+    return next(new expressError(400, errMsg));
+  }
+  next();
+};
 //home route
 app.get("/", (req, res) => {
   res.send("you home route");
@@ -36,6 +46,7 @@ app.get("/", (req, res) => {
 //index route
 app.get(
   "/listing",
+
   wrapasync(async (req, res) => {
     let allListings = await Listing.find();
     res.render("listing/index.ejs", { allListings });
@@ -48,18 +59,13 @@ app.get(
     res.render("listing/new.ejs");
   })
 );
-// save the listing details 
+// save the listing details
 app.post(
   "/listing",
+  validateListing,
   wrapAsync(async (req, res) => {
-    let result = listingSchema.validate(req.body);
-    console.log(result);
-    if(result.error){
-      res.status(400).send(result.error);
-    }
     let newlist = req.body.listing;
     let newlisting = new Listing(newlist);
-    console.log(newlisting);
     await newlisting.save();
     res.redirect("/listing");
   })
@@ -99,6 +105,21 @@ app.delete(
     let { id } = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listing");
+  })
+);
+//to handle the review
+app.post(
+  "/listing/:id/review",
+  wrapAsync(async (req, res) => {
+    let { id } = req.params;
+    let listing = await Listing.findById(id);
+    let review = new Review(req.body.review);
+    listing.Review.push(review);
+    await review.save();
+    let finalresult = await listing.save();
+    console.log("review saeved");
+    console.log(finalresult); 
+    res.send("saved");
   })
 );
 //to handle error
