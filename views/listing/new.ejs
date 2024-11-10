@@ -1,82 +1,78 @@
 <% layout("layouts/boilerplate") %>
-  <body>
-    <div class="row">
-        <div class="col-8 offset-2">
-            <br>
-    <h1>create new listing</h1>
-    <form action="/listing" method="post" novalidate class="needs-validation">
-      <!-- title field -->
-      <div class="mb-3">
-        <label for="title" class="form-label">title:</label>
-        <input
-          type="text"
-          placeholder="Add a catchy title"
-          name="listing[title]"
-          class="form-control"
-          required
-        />
-        <div class="valid-feedback">
-          Looks good!
-        </div>
-        <div class="invalid-feedback">
-          Please provide a title.
-        </div>
-      </div>
-      <!-- descripation field -->
-      <div class="mb-3">
-        <label for="description" class="form-label">description:</label>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br>
 
-        <textarea
-          name="listing[description]"
-          placeholder="Tell us what makes this special..."
-          class="form-control"
-          required
-        ></textarea>
-        <div class="valid-feedback">
-          Great description!
+      <!-- Page Title -->
+      <h1>Create New Listing</h1>
+
+      <!-- Listing Creation Form -->
+      <form action="/listing" method="post" novalidate class="needs-validation">
+        
+        <!-- Title Field -->
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
+          <input
+            type="text"
+            placeholder="Add a catchy title"
+            name="listing[title]"
+            class="form-control"
+            required
+          />
+          <!-- Validation Feedback -->
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please provide a title.</div>
         </div>
-        <div class="invalid-feedback">
-          Please enter a description.
+
+        <!-- Description Field -->
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea
+            name="listing[description]"
+            placeholder="Tell us what makes this special..."
+            class="form-control"
+            required
+          ></textarea>
+          <!-- Validation Feedback -->
+          <div class="valid-feedback">Great description!</div>
+          <div class="invalid-feedback">Please enter a description.</div>
         </div>
-      </div>
-      <!-- image field -->
-      <div class="mb-3">
-        <label for="image" class="form-label">image url:</label>
-        <input
-          type="text"
-          name="listing[image]"
-          placeholder="Paste the image link here!"
-          class="form-control"
-          
-        />
-        <div class="valid-feedback">
-          Image URL is valid.
+
+        <!-- Image URL Field -->
+        <div class="mb-3">
+          <label for="image" class="form-label">Image URL:</label>
+          <input
+            type="text"
+            name="listing[image]"
+            placeholder="Paste the image link here!"
+            class="form-control"
+          />
+          <!-- Validation Feedback -->
+          <div class="valid-feedback">Image URL is valid.</div>
+          <div class="invalid-feedback">Please provide a valid image URL.</div>
         </div>
-        <div class="invalid-feedback">
-          Please provide a valid image URL.
-        </div>
-      </div>
-      <!-- price field -->
-      <div class="row">
-        <div class="mb-3 col-md-6">
-            <label for="price" class="form-label">price:</label>
+
+        <!-- Price and Location Fields -->
+        <div class="row">
+          <!-- Price Field -->
+          <div class="mb-3 col-md-6">
+            <label for="price" class="form-label">Price:</label>
             <input
               type="text"
               name="listing[price]"
-              placeholder="Set the perfect price.."
+              placeholder="Set the perfect price..."
               class="form-control"
               required
             />
-            <div class="valid-feedback">
-              Perfect price.
-            </div>
-            <div class="invalid-feedback">
-              Please provide a price.
-            </div>
+            <!-- Validation Feedback -->
+            <div class="valid-feedback">Perfect price.</div>
+            <div class="invalid-feedback">Please provide a price.</div>
           </div>
-          <!-- lcoation field -->
+
+          <!-- Location Field -->
           <div class="mb-3 col-md-6">
-            <label for="location" class="form-label">location:</label>
+            <label for="location" class="form-label">Location:</label>
             <input
               type="text"
               name="listing[location]"
@@ -84,40 +80,34 @@
               class="form-control"
               required
             />
-            <div class="valid-feedback">
-              Location looks good.
-            </div>
-            <div class="invalid-feedback">
-              Please specify the location.
-            </div>
+            <!-- Validation Feedback -->
+            <div class="valid-feedback">Location looks good.</div>
+            <div class="invalid-feedback">Please specify the location.</div>
           </div>
-          
-      </div>
-      <!-- country field -->
-      <div class="mb-3">
-        <label for="country" class="form-label">country:</label>
-        <input
-          type="text"
-          name="listing[country]"
-          placeholder="Country of origin ..."
-          class="form-control"
-          required
-        />
-        <div class="valid-feedback">
-          Country selected.
         </div>
-        <div class="invalid-feedback">
-          Please select a country.
-        </div>
-    
-      </div>
-        <br>
-          <!-- Submit Button -->
 
-      <button class="btn btn-dark add-btn">Create</button>
-      <br><br>
-    </form>
-</div>
-</div>
-  </body>
+        <!-- Country Field -->
+        <div class="mb-3">
+          <label for="country" class="form-label">Country:</label>
+          <input
+            type="text"
+            name="listing[country]"
+            placeholder="Country of origin ..."
+            class="form-control"
+            required
+          />
+          <!-- Validation Feedback -->
+          <div class="valid-feedback">Country selected.</div>
+          <div class="invalid-feedback">Please select a country.</div>
+        </div>
+
+        <br>
+
+        <!-- Submit Button -->
+        <button class="btn btn-dark add-btn btn-styled">Create</button>
+        <br><br>
+      </form>
+    </div>
+  </div>
+</body>
 </html>
