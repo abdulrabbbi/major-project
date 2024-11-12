@@ -1,8 +1,11 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 const wrapAsync = require("../utils/wrapasync"); // Utility for handling async errors with try-catch
+const expressError = require("../utils/expresserror"); // Custom error handler for Express
 const { ReviewSchema } = require("../schema"); // Validation schemas for listings and reviews
 const Review = require("../models/review"); // Review model for handling review data
+const Listing = require("../models/listing"); // Listing model for handling listing data
+
 
 // Validate review data from backend
 const validateReview = (req, res, next) => {
@@ -30,7 +33,7 @@ router.post(
 );
 //delete the review from listing
 router.delete(
-  "/listing/:id/review/:reviewId",
+  "/:reviewId",
   wrapAsync(async (req, res) => {
     let { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { Review: reviewId } });

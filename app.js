@@ -39,10 +39,12 @@ app.all("*", (req, res, next) => {
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
-  res.render("error.ejs", { err }); // Render error page with error details
-  next();
+  if (!res.headersSent) {  // Check if headers are already sent
+    res.status(err.status || 500).render("error.ejs", { err });
+  } else {
+    console.error("Headers already sent. Cannot render error page.");
+  }
 });
-
 // Start server
 app.listen(3000, () => {
   console.log("your app is listening on port 3000");

@@ -3,7 +3,7 @@ const router = express.Router();
 const { listingSchema } = require("../schema"); // Validation schemas for listings and reviews
 const Listing = require("../models/listing"); // Listing model for handling listing data
 const wrapAsync = require("../utils/wrapasync"); // Utility for handling async errors with try-catch
-const expressError = require("./utils/expresserror"); // Custom error handler for Express
+const expressError = require("../utils/expresserror"); // Custom error handler for Express
 
 // Validate listing data from backend
 const validateListing = (req, res, next) => {
