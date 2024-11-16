@@ -40,6 +40,7 @@ router.post(
     let newlist = req.body.listing;
     let newlisting = new Listing(newlist);
     await newlisting.save(); // Save new listing to database
+    req.flash("success", "Listing created successfully! Your item is now live");
     res.redirect("/listing"); // Redirect to listing index
   })
 );
