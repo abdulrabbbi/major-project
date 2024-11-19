@@ -5,10 +5,14 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override"); // Middleware for HTTP method override
 const ejsMate = require("ejs-mate"); // Templating engine middleware for enhanced EJS functionality
 const expressError = require("./utils/expresserror"); // Custom error handler for Express
-const listings = require("./routes/listing");
-const Review = require("./routes/review");
+const listingrouter = require("./routes/listing");
+const ReviewRouter = require("./routes/review");
+const userRouter = require("./routes/user");
 const session = require("express-session"); // used to store data of client show on sever side
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 // MongoDB connection URL
 const mongoUrl = "mongodb://127.0.0.1:27017/Wandurlust";
@@ -41,16 +45,48 @@ const sessionOptioin = {
     httpOnly: true,
   },
 };
-
+// for store the user information in session
 app.use(session(sessionOptioin));
 app.use(flash());
+
+// using passport for authenticate
+
+// Initialize Passport middleware for handling authentication
+app.use(passport.initialize());
+
+// Enable session-based authentication for persistent login sessions
+app.use(passport.session());
+
+// Configure Passport to use the local strategy for authentication
+// The `User.authenticate()` method is provided by `passport-local-mongoose`
+// It simplifies username and password validation
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser()); // sterializer means store the user information in session
+passport.deserializeUser(User.deserializeUser());// Unsteriazer uers means remove the information for session
+
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
   next();
 });
 // middleware to handle the routes
-app.use("/listing", listings);
-app.use("/listing/:id/review", Review);
+app.use("/listing", listingrouter);
+app.use("/listing/:id/review", ReviewRouter);
+app.use("/", userRouter);
+
+// app.get("/demouser", async(req, res) => {
+//   let demouser = new User({
+//     email : "malika@gmail.com",
+//     username: "malika"
+  
+//   });
+//   let fake = await User.register(demouser, "khan@123");
+//   res.send(fake);
+// })
+
+
 // Handle 404 errors for undefined routes
 app.all("*", (req, res, next) => {
   next(new expressError(404, "page not found!!")); // Custom error for undefined routes

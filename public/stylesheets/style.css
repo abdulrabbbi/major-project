@@ -15,7 +15,6 @@ body {
   background-color: white !important;
 }
 
-
 .fa-compass {
   font-size: 2rem;
   color: #fe424d;
@@ -64,7 +63,6 @@ body {
   background-position: center center;
 }
 
-
 .card-img-top {
   border-radius: 1rem !important;
   width: 100%;
@@ -93,27 +91,27 @@ body {
 
 /* new page */
 .btn-styled {
-  font-size: 1rem  !important;          
-  font-weight: bold  !important;        
-  padding: 0.8rem 1.5rem  !important;   
-  border: none  !important;
-  border-radius: 5px  !important;       
-  cursor: pointer  !important;
-  color: white  !important;            
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  padding: 0.8rem 1.5rem !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  color: white !important;
 }
 /* Specific button colors */
 .add-btn {
-  background-color: #fe424d  !important;  /* Unique color for add button */
+  background-color: #fe424d !important; /* Unique color for add button */
 }
-.add-btn:hover{
-  opacity: .8  !important;
+.add-btn:hover {
+  opacity: 0.8 !important;
 }
 
 .delete-btn {
-  background-color: #100f0f  !important;  /* Unique color for delete button */
+  background-color: #100f0f !important; /* Unique color for delete button */
 }
-.delete-btn:hover{
-  opacity: .8  !important;
+.delete-btn:hover {
+  opacity: 0.8 !important;
 }
 
 /* show page */
@@ -123,15 +121,10 @@ body {
   gap: 3rem;
 }
 
-
-
 .review-submit-btn {
-  background-color: #100f0f  !important;  /* Matches delete button color */
+  background-color: #100f0f !important; /* Matches delete button color */
 }
-.review-submit-btn:hover{
-  opacity: .8  !important;
+.review-submit-btn:hover {
+  opacity: 0.8 !important;
 }
 
-
-
-/* review card */

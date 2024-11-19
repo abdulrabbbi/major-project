@@ -4,7 +4,7 @@ const { listingSchema } = require("../schema"); // Validation schemas for listin
 const Listing = require("../models/listing"); // Listing model for handling listing data
 const wrapAsync = require("../utils/wrapasync"); // Utility for handling async errors with try-catch
 const expressError = require("../utils/expresserror"); // Custom error handler for Express
-
+const { isloggin } = require("../middleware/islogin");
 // Validate listing data from backend
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body); // Validate with listing schema
@@ -27,6 +27,7 @@ router.get(
 // Create new listing form route
 router.get(
   "/new",
+  isloggin,
   wrapAsync((req, res) => {
     res.render("listing/new.ejs"); // Render form for creating a new listing
   })
@@ -35,12 +36,16 @@ router.get(
 // Save new listing to database
 router.post(
   "/",
+  isloggin,
   validateListing,
   wrapAsync(async (req, res) => {
     let newlist = req.body.listing;
     let newlisting = new Listing(newlist);
     await newlisting.save(); // Save new listing to database
-    req.flash("success", "Listing created successfully! Your item is now live");
+    req.flash(
+      "success",
+      "Listing created successfully! Your item is now live !!"
+    );
     res.redirect("/listing"); // Redirect to listing index
   })
 );
@@ -51,6 +56,10 @@ router.get(
   wrapAsync(async (req, res) => {
     let id = req.params.id;
     let list = await Listing.findById(id).populate("Review"); // Fetch listing by ID
+    if (!list) {
+      req.flash("error", "No results available for your search query");
+      res.redirect("/listing");
+    }
     res.render("listing/show.ejs", { list }); // Render show page with listing details
   })
 );
@@ -58,9 +67,14 @@ router.get(
 // Edit form route for a listing
 router.get(
   "/:id/edit",
+  isloggin,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let list = await Listing.findById(id); // Fetch listing to edit
+    if (!list) {
+      req.flash("error", "No results available for your search query");
+      res.redirect("/listing");
+    }
     res.render("listing/edit.ejs", { list }); // Render edit form with listing data
   })
 );
@@ -72,6 +86,7 @@ router.put(
     let { id } = req.params;
     let list = req.body.listing;
     await Listing.findByIdAndUpdate(id, { ...list }, { new: true }); // Update listing in database
+    req.flash("success", "Listing updated successfully!");
     res.redirect("/listing"); // Redirect to listing index
   })
 );
@@ -79,9 +94,12 @@ router.put(
 // Delete a listing
 router.delete(
   "/:id/delete",
+  isloggin,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id); // Delete listing by ID
+    req.flash("success", "Listing deleted successfully!");
+
     res.redirect("/listing"); // Redirect to listing index
   })
 );
