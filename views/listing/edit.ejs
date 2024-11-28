@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-8 offset-2"><br>
         <h1>Edit the listing</h1><br>
-        <form action="/listing/<%= list.id %>/edit?_method=PUT" method="POST" novalidate class="needs-validation">
+        <form action="/listing/<%= list.id %>/edit?_method=PUT" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
           <div class="mb-3">
             <!-- title field -->
             <label for="title" class="form-label">Title:</label>
@@ -40,15 +40,16 @@
               Please enter a description.
             </div>
           </div>
-         <!-- descriptaion field -->
+            <img src="<%= list.image.url  %>" alt="" height="250px" width="300px">
+          
+         <!-- image field -->
           <div class="mb-3">
             <label for="image" class="form-label">image:</label>
             <input
-              type="text"
+              type="file"
               name="listing[image]"
-              value="<%=list.image  %>"
               class="form-control"
-              required
+      
             />
             <div class="valid-feedback">
               Image URL is valid.

@@ -8,7 +8,7 @@
       <h1>Create New Listing</h1>
 
       <!-- Listing Creation Form -->
-      <form action="/listing" method="post" novalidate class="needs-validation">
+      <form action="/listing" method="post" novalidate class="needs-validation" enctype="multipart/form-data">
         
         <!-- Title Field -->
         <div class="mb-3">
@@ -41,9 +41,9 @@
 
         <!-- Image URL Field -->
         <div class="mb-3">
-          <label for="image" class="form-label">Image URL:</label>
+          <label for="image" class="form-label">Upload Image:</label>
           <input
-            type="text"
+            type="file"
             name="listing[image]"
             placeholder="Paste the image link here!"
             class="form-control"

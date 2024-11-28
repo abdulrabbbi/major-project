@@ -1,69 +1,34 @@
 const express = require("express");
-const router = express();
-const User = require("../models/user");
-const wrapasync = require("../utils/wrapasync");
+const router = express.Router(); // Use `Router()` for modular route handling
 const passport = require("passport");
-const { redirectURL } = require("../middleware/islogin");
 
-//render the signup page
-router.get("/signup", (req, res) => {
-  res.render("user/signup.ejs");
-});
+const User = require("../models/user");
+const wrapAsync = require("../utils/wrapasync"); // Utility for async error handling
+const { redirectURL } = require("../middleware/islogin"); // Middleware to handle redirection
+const UserController = require("../controllers/user");
 
-//to register the user through signup
-router.post(
-  "/signup",
-  wrapasync(async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      let newuser = new User({ username, email });
-      let registerUser = await User.register(newuser, password);
-      req.login(registerUser, (err) => {
-        if (err) {
-          return next(err);
-        }
-        req.flash("success", "Welcome to wandurlust!");
-        res.redirect("/listing");
-      });
-    } catch (err) {
-      req.flash("error", err.message);
-      res.redirect("/signup");
-    }
-  })
-);
+// User Authentication Routes
 
-//for login the user
-router.get("/login", (req, res) => {
-  res.render("user/login.ejs");
-});
+// 1. Signup Route
+router
+  .route("/signup")
+  .get(UserController.renderSignUpPage) // Render the signup form
+  .post(wrapAsync(UserController.registerUser)); // Handle user registration
 
-// login the data from user
-router.post(
-  "/login",
-  redirectURL,
-  passport.authenticate("local", {
-    failureRedirect: "/login", // Redirect back to login if authentication fails
-    failureFlash: true, // Flash message if login fails
-  }),
-  async (req, res) => {
-    req.flash(
-      "success",
-      "Welcome back to wandurlust! You have successfully logged in"
-    );
-    let redirecturl = res.locals.redirectURL || "/listing";
-    res.redirect(redirecturl);
-  }
-);
+// 2. Login Route
+router
+  .route("/login")
+  .get(UserController.renderLoginForm) // Render the login form
+  .post(
+    redirectURL, // Custom middleware to handle redirects
+    passport.authenticate("local", {
+      failureRedirect: "/login", // Redirect to login on failure
+      failureFlash: true, // Enable flash messages for login errors
+    }),
+    UserController.saveLoginData // Handle login success logic
+  );
 
-// logout route
-router.get("/logout",redirectURL, (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    req.flash("success", "You have successfully logged out");
-    res.redirect("./listing");
-  });
-});
+// 3. Logout Route
+router.get("/logout", redirectURL, UserController.logoutUser); // Log out the user and redirect
 
 module.exports = router;

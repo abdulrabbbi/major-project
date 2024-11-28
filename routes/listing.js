@@ -1,106 +1,52 @@
+if (process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const router = express.Router();
-const { listingSchema } = require("../schema"); // Validation schemas for listings and reviews
-const Listing = require("../models/listing"); // Listing model for handling listing data
-const wrapAsync = require("../utils/wrapasync"); // Utility for handling async errors with try-catch
-const expressError = require("../utils/expresserror"); // Custom error handler for Express
-const { isloggin } = require("../middleware/islogin");
-// Validate listing data from backend
-const validateListing = (req, res, next) => {
-  const { error } = listingSchema.validate(req.body); // Validate with listing schema
-  if (error) {
-    const errMsg = error.details.map((el) => el.message).join(", ");
-    return next(new expressError(400, errMsg)); // Throw custom error if validation fails
-  }
-  next(); // Proceed if validation passes
-};
+const wrapAsync = require("../utils/wrapasync"); // Utility for handling async errors
+const { isloggin, isOwner, validateListing } = require("../middleware/islogin");
+const Listingcontroller = require("../controllers/listing");
+const multer = require("multer");
+const { storage } = require("../cloudConfig");
+const upload = multer({ storage });
+// Routes for Listings
 
-// Index route for all listings
-router.get(
-  "/",
-  wrapAsync(async (req, res) => {
-    let allListings = await Listing.find(); // Fetch all listings
-    res.render("listing/index.ejs", { allListings }); // Render index page with listings
-  })
-);
+// 1. Index route for all listings
+router
+  .route("/")
+  .get(wrapAsync(Listingcontroller.index)) // Fetch all listings
+  .post(
+    isloggin, // Ensure user is logged in
+    upload.single("listing[image]"),
+    validateListing, // Validate listing data
+    wrapAsync(Listingcontroller.uploadListingData) // Save new listing
+  );
 
-// Create new listing form route
-router.get(
-  "/new",
-  isloggin,
-  wrapAsync((req, res) => {
-    res.render("listing/new.ejs"); // Render form for creating a new listing
-  })
-);
+// 2. Form to create a new listing
+router.get("/new", isloggin, wrapAsync(Listingcontroller.renderForm));
 
-// Save new listing to database
-router.post(
-  "/",
-  isloggin,
-  validateListing,
-  wrapAsync(async (req, res) => {
-    let newlist = req.body.listing;
-    let newlisting = new Listing(newlist);
-    await newlisting.save(); // Save new listing to database
-    req.flash(
-      "success",
-      "Listing created successfully! Your item is now live !!"
-    );
-    res.redirect("/listing"); // Redirect to listing index
-  })
-);
+// 3. Show a single listing
+router.get("/:id", wrapAsync(Listingcontroller.showListing));
 
-// Show route for a single listing
-router.get(
-  "/:id",
-  wrapAsync(async (req, res) => {
-    let id = req.params.id;
-    let list = await Listing.findById(id).populate("Review"); // Fetch listing by ID
-    if (!list) {
-      req.flash("error", "No results available for your search query");
-      res.redirect("/listing");
-    }
-    res.render("listing/show.ejs", { list }); // Render show page with listing details
-  })
-);
+// 4. Edit and Update a listing
+router
+  .route("/:id/edit")
+  .get(isloggin, isOwner, wrapAsync(Listingcontroller.renderEditForm)) // Edit form
+  .put(
+    isloggin, // Ensure user is logged in
+    isOwner, // Ensure user owns the listing
+    upload.single("listing[image]"),
+    validateListing, // Validate updated listing data
+    wrapAsync(Listingcontroller.updateListingDetails) // Update listing
+  );
 
-// Edit form route for a listing
-router.get(
-  "/:id/edit",
-  isloggin,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let list = await Listing.findById(id); // Fetch listing to edit
-    if (!list) {
-      req.flash("error", "No results available for your search query");
-      res.redirect("/listing");
-    }
-    res.render("listing/edit.ejs", { list }); // Render edit form with listing data
-  })
-);
-
-// Update listing details
-router.put(
-  "/:id/edit",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let list = req.body.listing;
-    await Listing.findByIdAndUpdate(id, { ...list }, { new: true }); // Update listing in database
-    req.flash("success", "Listing updated successfully!");
-    res.redirect("/listing"); // Redirect to listing index
-  })
-);
-
-// Delete a listing
+// 5. Delete a listing
 router.delete(
   "/:id/delete",
-  isloggin,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    await Listing.findByIdAndDelete(id); // Delete listing by ID
-    req.flash("success", "Listing deleted successfully!");
-
-    res.redirect("/listing"); // Redirect to listing index
-  })
+  isloggin, // Ensure user is logged in
+  isOwner, // Ensure user owns the listing
+  wrapAsync(Listingcontroller.deleteListing) // Delete listing
 );
+
 module.exports = router;

@@ -13,6 +13,8 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
+const favicon = require("serve-favicon");
+
 
 // MongoDB connection URL
 const mongoUrl = "mongodb://127.0.0.1:27017/Wandurlust";
@@ -28,11 +30,13 @@ main()
   .catch((err) => console.log(err));
 
 // Middleware and configuration
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.engine("ejs", ejsMate); // Use ejsMate as the EJS templating engine
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data from forms
 app.set("view engine", "ejs"); // Set view engine to EJS
 app.set("views", path.join(__dirname, "views")); // Define views directory
 app.use(express.static(path.join(__dirname, "/public"))); // Serve static files
+app.use(express.static("public")); // Ensure this serves your favicon
 app.use(methodOverride("_method")); // Enable method override for PUT and DELETE requests
 
 const sessionOptioin = {
@@ -76,21 +80,16 @@ app.use("/listing", listingrouter);
 app.use("/listing/:id/review", ReviewRouter);
 app.use("/", userRouter);
 
-// app.get("/demouser", async(req, res) => {
-//   let demouser = new User({
-//     email : "malika@gmail.com",
-//     username: "malika"
-  
-//   });
-//   let fake = await User.register(demouser, "khan@123");
-//   res.send(fake);
-// })
-
-
 // Handle 404 errors for undefined routes
 app.all("*", (req, res, next) => {
   next(new expressError(404, "page not found!!")); // Custom error for undefined routes
 });
+
+// for to resolve the console error
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end(); // No Content
+});
+
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
