@@ -31,7 +31,10 @@ module.exports.renderLoginForm = (req, res) => {
 
 // Handle Login Success
 module.exports.saveLoginData = (req, res) => {
-  req.flash("success", "Welcome back to Wandurlust! You have successfully logged in.");
+  req.flash(
+    "success",
+    "Welcome back to Wandurlust! You have successfully logged in."
+  );
   const redirectUrl = res.locals.redirectURL || "/listing"; // Use redirect URL if available, default to /listing
   res.redirect(redirectUrl);
 };

@@ -27,8 +27,7 @@ module.exports.uploadListingData = async (req, res) => {
     filename: filename,
   };
   newlisting.geometry = response.body.features[0].geometry;
-  let savelisting =  await newlisting.save(); // Save new listing to database
-  console.log("savelisting", savelisting);
+  await newlisting.save(); // Save new listing to database
   req.flash(
     "success",
     "Listing created successfully! Your item is now live !!"

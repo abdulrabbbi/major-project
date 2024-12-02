@@ -21,6 +21,8 @@ body {
 }
 .nav-link {
   color: #090909 !important;
+  font-size: large !important;
+  font-weight: 500 !important;
 }
 /* footer styling */
 
@@ -62,7 +64,10 @@ body {
 .card img {
   background-position: center center;
 }
-
+.listingOwner{
+  font-weight: 700;
+  font-size: medium;
+}
 .card-img-top {
   border-radius: 1rem !important;
   width: 100%;

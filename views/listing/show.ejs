@@ -24,7 +24,7 @@
         <div class="card-body">
           <p class="card-text">
             <ul>
-              <h4> <i class="listingOwner">Owned listing by</i> : <%= list.owner.username %></h4>
+              <h4> <i class="listingOwner">listing Owned by</i> : <b><%= list.owner.username %></b> </h4>
               <li><%= list.description %></li>
               <li>Rs: <%= list.price.toLocaleString('en-PK') %></li>
               <li><%= list.location %></li>
@@ -144,9 +144,14 @@
       </form>
       <% } %>
     </div>
-    <% if(list.review && list.review.length ){ %>
-    <h4 class="offset-1 mb-3">Customer reviews</h4>
-    <% } %>
+    <% if (list.Review && list.Review.length > 0) { %>
+      <h4 class="offset-1 mb-3">Customer reviews</h4>
+      <% } else { %>
+        <p class="offset-1 mb-3">No reviews yet! &nbsp; &nbsp;</p>
+        <% if(!currUser) {%>
+          <p class="offset-1 mb-3"><i><a href="/login" class="text-primary">Log in</a> or <a href="/signup" class="text-primary">sign up</a> to post your review!</i></p>
+          <% } %>
+      <% } %>
   </div>
   <!-- all reviews -->
   <div class="container mt-4  ">

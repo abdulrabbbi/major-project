@@ -8,6 +8,7 @@ const expressError = require("./utils/expresserror"); // Custom error handler fo
 const listingrouter = require("./routes/listing");
 const ReviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
+const MongoStore = require("connect-mongo"); // use for session storage in mongodb
 const session = require("express-session"); // used to store data of client show on sever side
 const flash = require("connect-flash");
 const passport = require("passport");
@@ -15,12 +16,13 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const favicon = require("serve-favicon");
 
+const uri = process.env.ATLASDB_URL;
 
 // MongoDB connection URL
-const mongoUrl = "mongodb://127.0.0.1:27017/Wandurlust";
+// const mongoUrl = "mongodb://127.0.0.1:27017/Wandurlust";
 
 async function main() {
-  await mongoose.connect(mongoUrl); // Connect to MongoDB
+  await mongoose.connect(uri); // Connect to MongoDB
 }
 
 main()
@@ -39,18 +41,34 @@ app.use(express.static(path.join(__dirname, "/public"))); // Serve static files
 app.use(express.static("public")); // Ensure this serves your favicon
 app.use(methodOverride("_method")); // Enable method override for PUT and DELETE requests
 
-const sessionOptioin = {
-  secret: "yousecretkey",
-  resave: false, // forces the session to be saved back to the store even if it hasn't been modified
-  saveUninitialized: true, // forces a session that is "uninitialized" to be saved
+const store = MongoStore.create({
+  mongoUrl: uri, // Ensure `uri` is defined and contains a valid MongoDB connection string
+  crypto: {
+    secret: process.env.SESSION_SECRET, // Replace with a strong secret or use an environment variable
+  },
+  touchAfter: 24 * 3600, // Reduce write operations by updating session data only once every 24 hours
+});
+
+// Handle errors in the session store
+store.on("error", (err) => {
+  console.log("Error in MongoDB session store:", err);
+});
+
+
+const sessionOptions = {
+  store,
+  secret: process.env.SESSION_SECRET || "fallbackSecretKey", // Use a secure secret key
+  resave: false, // Prevent unnecessary session resaves
+  saveUninitialized: true, // Save uninitialized sessions
   cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Corrected `expires` format
+    maxAge: 7 * 24 * 60 * 60 * 1000, // Set the cookie's lifetime
+    httpOnly: true, // Enhance security by making the cookie inaccessible via JavaScript
   },
 };
+
 // for store the user information in session
-app.use(session(sessionOptioin));
+app.use(session(sessionOptions));
 app.use(flash());
 
 // using passport for authenticate
@@ -66,8 +84,7 @@ app.use(passport.session());
 // It simplifies username and password validation
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); // sterializer means store the user information in session
-passport.deserializeUser(User.deserializeUser());// Unsteriazer uers means remove the information for session
-
+passport.deserializeUser(User.deserializeUser()); // Unsteriazer uers means remove the information for session
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
@@ -89,7 +106,6 @@ app.all("*", (req, res, next) => {
 app.get("/favicon.ico", (req, res) => {
   res.status(204).end(); // No Content
 });
-
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
