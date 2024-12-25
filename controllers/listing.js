@@ -21,7 +21,7 @@ module.exports.uploadListingData = async (req, res) => {
   const { path: url, filename } = req.file;
   let newlist = req.body.listing;
   let newlisting = new Listing(newlist);
-  newlisting.owner = req.user._id;
+  newlisting.owner = req.user._id;  // store owner data in listing   req.user = currrent user that is login
   newlisting.image = {
     url: url,
     filename: filename,
